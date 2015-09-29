@@ -207,6 +207,12 @@ function newRowItem(content){
 	$(cell1).attr("onclick", "editItem('"+content.itemKey+"');");
 	$(cell1).append(document.createTextNode(content.title));
 	$(row).append(cell1);
+	// Type cell
+	var cellbetween1and2 = document.createElement("td");
+	$(cellbetween1and2).attr("class", "rowType");
+	$(cellbetween1and2).attr("onclick", "editItem('"+content.itemKey+"');");
+	$(cellbetween1and2).append(document.createTextNode(content.type));
+	$(row).append(cellbetween1and2);
 	// Description cell
 	var cell2 = document.createElement("td");
 	$(cell2).attr("class", "rowDescription");

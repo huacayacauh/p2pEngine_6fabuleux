@@ -52,6 +52,7 @@ public class AddItem extends AbstractInterlocutor {
 				JSONObject content = new JSONObject();
 				content.put("itemKey", itemKey);
 				content.put("title", title);
+				content.put("type", type);
 				content.put("description", description);
 				data.put("content", content);
 				com.sendText(data.toString());
