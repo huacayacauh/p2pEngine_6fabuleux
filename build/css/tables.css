@@ -82,10 +82,15 @@ table .rowTitle {
 	width : 15%;
 	text-align : center;
 }
+table .rowType {
+	width : 15%;
+	text-align : center;
+}
 table .rowDescription {
 	text-align : left;
 	word-break : break-all;
 }
+
 table .rowActions {
 	text-align : center;
 	width : 8%;

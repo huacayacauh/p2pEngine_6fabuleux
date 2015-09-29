@@ -43,6 +43,7 @@ public class LoadItems extends AbstractInterlocutor {
 				JSONObject content = new JSONObject();
 				content.put("itemKey", item.getItemKey());
 				content.put("title", item.getTitle());
+				content.put("type", item.getType());
 				content.put("description", item.getDescription());
 				data.put("content", content);
 				com.sendText(data.toString());
