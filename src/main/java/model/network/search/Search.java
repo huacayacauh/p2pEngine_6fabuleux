@@ -83,8 +83,14 @@ public class Search<T extends AbstractAdvertisement> implements DiscoveryListene
 	 */
 	public void search(String value, long maxWaitTime, int waitResult) {
 		results = new ArrayList<T>();
-		String searchValue = !exact ? "*" + value + "*": value;
-		discovery.getRemoteAdvertisements(null, DiscoveryService.ADV, attribute, searchValue, 10, this);
+		
+		String []result = value.split(" ou ");
+		for( String element : result){
+			String searchValue = !exact ? "*" + element + "*": value;
+			System.out.println(searchValue);
+			discovery.getRemoteAdvertisements(null, DiscoveryService.ADV, attribute, searchValue, 10, this);
+		}
+		
 		
 		long waiting = maxWaitTime;
 		
