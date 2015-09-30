@@ -1,0 +1,129 @@
+
+
+options
+{
+  static = false;
+}
+
+PARSER_BEGIN(SearchParser)
+package model.network.search.parser;
+import java.io.InputStream;
+
+public class SearchParser
+{
+  public boolean checkRequest(InputStream request) throws ParseException
+  {   
+    SearchParser parser = new SearchParser(request);
+
+
+    
+	SimpleNode search;
+    System.out.println("Parser Invocated");
+    try
+      {
+        search = Recherche();
+      }
+      catch (Exception e)
+      {
+        System.out.println("NOK.");
+        System.out.println(e.getMessage());
+		return false;
+      }
+      catch (Error e)
+      {
+        System.out.println("Oops.");
+        System.out.println(e.getMessage());
+        return false;
+      }
+      search.dump("");
+      return search != null;
+    
+  }
+}
+
+PARSER_END(SearchParser)
+
+SKIP :
+{
+  " "
+|   "\r"
+| "\t"
+| "\n"
+}
+
+TOKEN : /* OPERATORS */
+{
+ < AND : "AND" >
+| < OR : "OR" >
+| < LEFTPARENTHESIS : "(" >
+| < RIGHTPARENTHESIS : ")" >
+}
+
+TOKEN :
+{
+ < WORD_TOKEN : (["a"-"z"] | ["A"-"Z"])+ > |
+    < NUMBER_TOKEN : (["0"-"9"])+ >
+}
+
+SimpleNode Recherche()  :{
+}
+{
+  	(Expression())* 
+  	{
+  	  return jjtThis;
+ 	}
+
+  
+}
+
+void Expression() :
+{
+}
+{
+  < WORD_TOKEN > (ExpressionBis())
+| LEFTPARENTHESIS() Expression() RIGHTPARENTHESIS() (ExpressionBis())   	 
+  
+}
+
+void ExpressionBis() :
+{
+}
+{
+  (Operateur() Expression())*
+}
+
+void Operateur() :
+{
+}
+{
+  AND()
+| OR()
+}
+
+void AND():
+{
+}
+{
+  < AND >
+}
+
+void OR():
+{
+}
+{
+  < OR >
+}
+
+void LEFTPARENTHESIS():
+{
+}
+{
+  < LEFTPARENTHESIS >
+}
+
+void RIGHTPARENTHESIS():
+{
+}
+{
+  < RIGHTPARENTHESIS >
+}

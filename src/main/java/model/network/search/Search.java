@@ -15,18 +15,22 @@
    If not, see <http://www.gnu.org/licenses/>. */
 package model.network.search;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import com.sun.el.parser.ParseException;
+import model.network.search.parser.*;
 import model.advertisement.AbstractAdvertisement;
 import model.network.NetworkInterface;
 import net.jxta.discovery.DiscoveryEvent;
 import net.jxta.discovery.DiscoveryListener;
 import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
-import net.jxta.document.MimeMediaType;
 import net.jxta.id.IDFactory;
 import net.jxta.peer.PeerID;
 
@@ -80,18 +84,35 @@ public class Search<T extends AbstractAdvertisement> implements DiscoveryListene
 	 * @param value
 	 * @param maxWaitTime Time to wait before function returns. Can be 0, the search will continue and notify listeners and function returns immediately
 	 * @param waitResult, number of results expected before the function return;
+	 * @throws ParseException 
 	 */
-	public void search(String value, long maxWaitTime, int waitResult) {
+	
+	//*value* permet de rechercher exactement ce que l'on a tapé
+	public void search(String value, long maxWaitTime, int waitResult){
 		results = new ArrayList<T>();
+		Boolean parserResult = false;
+		InputStream stream = new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8));
+		SearchParser parser = new SearchParser(stream);
+
+		try {
+			
+			parserResult = parser.checkRequest(stream);
+		} catch (model.network.search.parser.ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
+		if(! parserResult){
+			System.out.println("Expression non valide");
+			return;
+		}
+
 		
-		String []result = value.split(" ou ");
+		String searchValue; 
+		String [] result = value.split(" OR ");
 		for( String element : result){
-			String searchValue = !exact ? "*" + element + "*": value;
-			System.out.println(searchValue);
+			searchValue = !exact ? "*" + element + "*": element;
 			discovery.getRemoteAdvertisements(null, DiscoveryService.ADV, attribute, searchValue, 10, this);
 		}
-		
-		
 		long waiting = maxWaitTime;
 		
 		if(maxWaitTime != 0) {
