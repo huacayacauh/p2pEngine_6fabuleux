@@ -24,6 +24,7 @@ import model.data.item.Category.CATEGORY;
 import model.data.item.Item;
 import model.data.item.Item.TYPE;
 import model.data.user.User;
+import model.network.search.ExtendedSearch;
 import model.network.search.Search;
 import model.network.search.SearchListener;
 
@@ -33,7 +34,7 @@ public class SearchItemController implements SearchListener<Item>{
 	private ArrayList<SearchListener<Item>> listeners = new ArrayList<SearchListener<Item>>();
 	
 	public void startSearch(String title) {
-		Search<Item> s = new Search<Item>(Application.getInstance().getNetwork(), Item.class.getSimpleName(), "title", false);
+		ExtendedSearch<Item> s = new ExtendedSearch<Item>(Application.getInstance().getNetwork(), Item.class.getSimpleName(), "title", false);
 		s.addListener(this);
 		items = new HashMap<String, Item>();
 		s.search(title, 0, 0);

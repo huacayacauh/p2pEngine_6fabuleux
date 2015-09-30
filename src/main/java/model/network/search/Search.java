@@ -43,10 +43,10 @@ import net.jxta.peer.PeerID;
 public class Search<T extends AbstractAdvertisement> implements DiscoveryListener {
 
 	private ArrayList<SearchListener<T>> listeners = new ArrayList<SearchListener<T>>();
-	private DiscoveryService discovery;
-	private String attribute;
-	private boolean exact;
-	private ArrayList<T> results = new ArrayList<T>();
+	protected DiscoveryService discovery;
+	protected String attribute;
+	protected boolean exact;
+	protected ArrayList<T> results = new ArrayList<T>();
 	private ArrayList<Result> resultsWithPeerID = new ArrayList<Result>();
 	
 	public class Result implements Cloneable{
@@ -87,34 +87,13 @@ public class Search<T extends AbstractAdvertisement> implements DiscoveryListene
 	 * @throws ParseException 
 	 */
 	
-	//*value* permet de rechercher exactement ce que l'on a tapé
 	public void search(String value, long maxWaitTime, int waitResult){
 		results = new ArrayList<T>();
-		Boolean parserResult = false;
-		InputStream stream = new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8));
-		SearchParser parser = new SearchParser(stream);
-
-		try {
-			
-			parserResult = parser.checkRequest(stream);
-		} catch (model.network.search.parser.ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} 
-		if(! parserResult){
-			System.out.println("Expression non valide");
-			return;
-		}
-
+		String searchValue;
+		searchValue = !exact ? "*" + value + "*": value;
+		discovery.getRemoteAdvertisements(null, DiscoveryService.ADV, attribute, searchValue, 10, this);
 		
-		String searchValue; 
-		String [] result = value.split(" OR ");
-		for( String element : result){
-			searchValue = !exact ? "*" + element + "*": element;
-			discovery.getRemoteAdvertisements(null, DiscoveryService.ADV, attribute, searchValue, 10, this);
-		}
 		long waiting = maxWaitTime;
-		
 		if(maxWaitTime != 0) {
 			while(waiting > 0 && (results.size() < waitResult || waitResult == 0)) {
 				long currentTime = System.currentTimeMillis();
@@ -168,5 +147,7 @@ public class Search<T extends AbstractAdvertisement> implements DiscoveryListene
 		}
 		
 	}
+	
+	
 
 }
